@@ -60,11 +60,16 @@ class User extends Controller
      */
     public function regSave(){
         $params = $_REQUEST;
-        $params['avatar'] = 'https://img-blog.csdnimg.cn/20190927151101105.png';
+        if($_FILES['avatar']) $params['avatar'] = $_FILES['avatar'];
         if( !$this->_checkRegData($params)){
             echo $this->error;
             return;
         };
+        if( !($url = $this->_uploadAvatar($_FILES['avatar'])) ){
+            echo $this->error;
+            return;
+        }
+        $params['avatar'] = $url;
         $data = [
             'member_name'        => $params['username'],
             'member_password'    => md5($params['password']),
@@ -78,7 +83,7 @@ class User extends Controller
         $userObj = new Member();
         $res = $userObj->createMember($data);
         if($res){
-            return 'suc';
+            return $this->redirect('/');
         }else{
             return '注册失败，请重新注册';
         }
@@ -162,5 +167,48 @@ class User extends Controller
             return false;
         }
         return true;
+    }
+
+    /**
+     * 上传头像文件
+     * @param $file
+     * @return bool
+     */
+    private function _uploadAvatar( $file ){
+        $res = false;
+        if($file['error'] != 0){
+            $this->error = '上传失败请重试';
+            return $res;
+        }
+        $allowedExts = array("gif", "jpeg", "jpg", "png");
+        $arr = explode(".", $file["name"]);
+        $len = count($arr);
+        $extension = $arr[$len-1];
+        if (!((($file["type"] == "image/gif")
+                || ($file["type"] == "image/jpeg")
+                || ($file["type"] == "image/jpg")
+                || ($file["type"] == "image/pjpeg")
+                || ($file["type"] == "image/x-png")
+                || ($file["type"] == "image/png"))
+            && in_array($extension, $allowedExts))){
+            $this->error = '文件扩展名仅支持gif，jpg，png，jpeg';
+            return $res;
+        }
+        if( ($file['size']>1048576) ){ //php.ini 默认支持最大文件大小为2M
+            $this->error = '文件大小最大上传2M';
+        }
+        $dir = '/static/index/image/user_avatar/';
+        $file_path = $_SERVER['DOCUMENT_ROOT'].$dir;
+        if(file_exists($file_path.$file['name'])){
+            $this->error = '您上传的文件已存在';
+            return $res;
+        }
+        $newFile = $file_path.$file["name"];
+        if( !move_uploaded_file($file["tmp_name"], $newFile) ){
+            $this->error = '上传失败请重试';
+            return $res;
+        }
+        $res = $dir.$file["name"];
+        return $res;
     }
 }

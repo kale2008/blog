@@ -47,7 +47,7 @@ class Member extends Model
         $res = false;
         $userInfo = Db::table($this->table)->where('member_name', $name)->select();
         if( !empty($userInfo) ){
-            return $userInfo[0] ?? $res;
+            return !empty($userInfo[0]) ? $userInfo[0] : $res;
         }
         return $res;
     }
