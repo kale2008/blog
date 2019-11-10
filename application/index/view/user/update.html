@@ -1,0 +1,48 @@
+{include file="public/header" /}
+<script type="text/javascript" src="__STATIC__/index/js/common.js"></script>
+<script type="text/javascript" src="__STATIC__/index/js/user.js"></script>
+<div class="main-content item-box">
+    <div class="login-box" style="margin-top: auto; width: 850px; height: 1720px;">
+        <div class="login-title layui-row">
+            <h2>个人信息</h2>
+        </div>
+        <div class="hr-line-div"></div>
+        <form method="post" action="/index.php/index/user/infoUp" enctype="multipart/form-data" name="form">
+            <div class="login-form">
+                <p>用户名：</p><span>{$userInfo.member_name}</span>
+                <p>省/市/县：</p>
+                <select name="province" id="province" class="layui-input" onchange="provinceChange(this.options[this.options.selectedIndex].value)">
+                    <option value ="0">请选择省</option>
+                    <?php foreach($provinceData as $v){ ?>
+                    <option value ="<?php echo $v['code'];?>"><?php echo $v['name'];?></option>
+                    <?php }?>
+                </select>
+                <br/>
+                <select name="city" id="city" class="layui-input" onchange="cityChange(this.options[this.options.selectedIndex].value)">
+                    <option value ="0">请选择市</option>
+                    <?php foreach($cityData as $v){ ?>
+                    <option value ="<?php echo $v['code'];?>"><?php echo $v['name'];?></option>
+                    <?php }?>
+                </select>
+                <br/>
+                <select name="county" id="county" class="layui-input">
+                    <option value ="0">请选择区</option>
+                    <?php foreach($areaData as $v){ ?>
+                    <option value ="<?php echo $v['code'];?>"><?php echo $v['name'];?></option>
+                    <?php }?>
+                </select>
+                <p>具体地址：</p><input type="text" name="address" value="{$userInfo.member_address}" placeholder="请输入地址" class="layui-input">
+                <p>上传头像：</p><input type="file" name="avatar">
+                <img src="{$userInfo.member_avatar}"/>
+
+                <p><button class="layui-btn layui-btn-fluid" id="submit_btn" onclick="document.getElementsByName('form').submit()">提交</button></p>
+            </div>
+            <input type="hidden" name="id" value="{$userInfo.member_id}"/>
+        </form>
+        <input type="hidden" id="c_province" value="{$userInfo.member_province}"/>
+        <input type="hidden" id="c_city" value="{$userInfo.member_city}"/>
+        <input type="hidden" id="c_county" value="{$userInfo.member_county}"/>
+    </div>
+</div>
+</body>
+</html>

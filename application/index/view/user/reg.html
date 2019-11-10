@@ -1,12 +1,13 @@
 {include file="public/header" /}
 <script type="text/javascript" src="__STATIC__/index/js/common.js"></script>
+<script type="text/javascript" src="__STATIC__/index/js/reg.js"></script>
 <div class="main-content item-box">
 	<div class="login-box" style="margin-top: auto; width: 850px; height: 720px;">
 		<div class="login-title layui-row">
 			<h2>注册</h2>
 		</div>
 		<div class="hr-line-div"></div>
-		<form method="post" action="/index.php/index/user/regSave" name="form">
+		<form method="post" action="/index.php/index/user/regSave" enctype="multipart/form-data" name="form">
 		<div class="login-form">
 			<p>用户名：</p><input type="text" name="username" placeholder="请输入用户名" class="layui-input">
 			<p>密码：</p><input type="password" name="password" placeholder="请输入密码" class="layui-input">

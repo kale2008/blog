@@ -1,0 +1,23 @@
+{include file="public/header" /}
+<div class="main-content item-box">
+    <div class="login-box" style="margin-top: auto; width: 850px; height: 720px;">
+        <div class="login-title layui-row">
+            <h2>个人信息</h2>
+        </div>
+        <a href="/index.php/index/user/infoUp">修改</a>
+        <div class="hr-line-div"></div>
+            <div class="login-form">
+                <p>用户名：<strong>{$userInfo.member_name}</strong></p>
+                <p>省：<strong>{$userInfo.province_name}</strong></p>
+                <p>市：<strong>{$userInfo.city_name}</strong></p>
+                <p>县：<strong>{$userInfo.county_name}</strong></p>
+                <p>具体地址：<strong>{$userInfo.member_address}</strong></p>
+                <p>上传头像：</p>
+                <img src="{$userInfo.member_avatar}"/>
+
+                <button class="layui-btn layui-btn-fluid" id="submit_btn" onclick="document.getElementsByName('form').submit()">立即注册</button>
+            </div>
+    </div>
+</div>
+</body>
+</html>

@@ -36,7 +36,7 @@ function createXHR() {
  * @param callback
  * @param async 是否异步
  */
-function ajax(type, url, dataObj, callback, async) {
+function ajax(type, url, dataObj, callback, async=true) {
     var paramsStr = buildParamsStr(dataObj), xhr = null;
     if (type === 'get' && dataObj) {
         url = addURLParams(url, paramsStr);
@@ -53,7 +53,7 @@ function ajax(type, url, dataObj, callback, async) {
             }
         }
     };
-    xhr.open(type, url, true); // open()方法启动一个请求以备发送；
+    xhr.open(type, url, async); // open()方法启动一个请求以备发送；
     if (type == 'get') {
         xhr.send(null);
     } else {
@@ -100,8 +100,8 @@ function cityChange (code) {
     }
 }
 
-window.onload = function(){
-    // 获取省数据
+// 获取省数据 - 全部
+function getProvinceList() {
     var provinceUrl = '/index.php/index/index/provinceList';
     ajax('get', provinceUrl, {}, function fnSucc(str){
         obj = JSON.parse(str);
@@ -195,4 +195,29 @@ function cancelFabulous(blog_id,member_id){
         }
         return false;
     });
+}
+
+/**
+
+ * 设置select控件选中
+
+ * @param selectId select的id值
+
+ * @param checkValue 选中option的值
+
+ */
+
+function set_select_checked(selectId, checkValue){
+
+    var select = document.getElementById(selectId);
+
+    for (var i = 0; i < select.options.length; i++){
+
+        if (select.options[i].value == checkValue){
+
+            select.options[i].selected = true;
+
+            break;
+        }
+    }
 }
