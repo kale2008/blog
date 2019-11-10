@@ -87,16 +87,14 @@ class User extends Base
                 'member_address'     => $params['address'],
             ];
             if( !$this->_checkUserUpdateData($params)){
-                echo $this->error;
-                return;
+                $this->success($this->error); // error page show
             }
             $pic = $userInfo['member_avatar'];
             $pic = explode('/', $pic);
             $len = count($pic);
             if(!empty($_FILES['avatar']['name']) && $_FILES['avatar']['name'] != $pic[$len-1]) {
                 if (!($url = $this->_uploadAvatar($_FILES['avatar']))) {
-                    echo $this->error;
-                    return;
+                    $this->success($this->error); // error page show
                 }
                 $data['member_avatar'] = $url;
             }
@@ -105,7 +103,7 @@ class User extends Base
             if($res){
                 return $this->redirect('/index.php/index/user/show ');
             }else{
-                return '修改个人信息失败';
+                $this->success('修改个人信息失败'); // error page show
             }
         }else{
             $provinceModel = new Province();
@@ -146,12 +144,10 @@ class User extends Base
         $params = $_REQUEST;
         if($_FILES['avatar']) $params['avatar'] = $_FILES['avatar'];
         if( !$this->_checkRegData($params)){
-            echo $this->error;
-            return;
+            $this->success($this->error); // error page show
         };
         if( !($url = $this->_uploadAvatar($_FILES['avatar'])) ){
-            echo $this->error;
-            return;
+            $this->success($this->error); // error page show
         }
         $params['avatar'] = $url;
         $data = [
@@ -169,7 +165,7 @@ class User extends Base
         if($res){
             return $this->redirect('/');
         }else{
-            return '注册失败，请重新注册';
+            $this->success('注册失败，请重新注册'); // error page show
         }
     }
 

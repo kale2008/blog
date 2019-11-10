@@ -2,7 +2,7 @@
 <script type="text/javascript" src="__STATIC__/index/js/common.js"></script>
 <script type="text/javascript" src="__STATIC__/index/js/user.js"></script>
 <div class="main-content item-box">
-    <div class="login-box" style="margin-top: auto; width: 850px; height: 720px;">
+    <div class="login-box" style="margin-top: auto; width: 850px; height: 1720px;">
         <div class="login-title layui-row">
             <h2>个人信息</h2>
         </div>
@@ -33,7 +33,7 @@
                 </select>
                 <p>具体地址：</p><input type="text" name="address" value="{$userInfo.member_address}" placeholder="请输入地址" class="layui-input">
                 <p>上传头像：</p><input type="file" name="avatar">
-
+                <img src="{$userInfo.member_avatar}"/>
 
                 <p><button class="layui-btn layui-btn-fluid" id="submit_btn" onclick="document.getElementsByName('form').submit()">提交</button></p>
             </div>
