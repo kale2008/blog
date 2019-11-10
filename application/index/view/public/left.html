@@ -1,4 +1,26 @@
 <div class="item-type">
+	{if ($index_user)}
+	<div class="column-item layui-row">
+		<div class="column-item-title layui-row subject-color font-color1 font-bold">{$index_user}，欢迎您，您当前活跃度等级：2</div>
+		<div style="width: 100px; height: 100px; float:left; border-radius: 50%; margin-left: 76px; overflow: hidden;">
+			<img src="{$index_avatar}" width="100px" height="100px" />
+		</div>
+		<div class="jianjie-p layui-row">
+			<div class="login-form">
+				<button class="layui-btn layui-btn-fluid layui-btn-normal"
+						style="background-color: #e76a3b"
+						onclick="window.location.href='/index.php/index/user/reg'">完善资料</button>
+			</div>
+			<br/>
+			<div class="login-form">
+				<button class="layui-btn layui-btn-fluid layui-btn-normal"
+						style="background-color: #e76a3b"
+						onclick="window.location.href='/index.php/index/user/login'">我收藏的博文</button>
+			</div>
+			<br/>
+		</div>
+	</div>
+	{else}
 	<div class="column-item layui-row">
 		<div class="column-item-title layui-row subject-color font-color1 font-bold">游客身份</div>
 		<div style="width: 100px; height: 100px; float:left; border-radius: 50%; margin-left: 76px; overflow: hidden;">
@@ -8,7 +30,7 @@
 			<div class="login-form">
 				<button class="layui-btn layui-btn-fluid layui-btn-normal"
 						style="background-color: #e76a3b"
-				onclick="window.location.href='/index.php/index/user/login'">登    录</button>
+						onclick="window.location.href='/index.php/index/user/login'">登    录</button>
 			</div>
 			<br/>
 			<div class="login-form">
@@ -17,6 +39,8 @@
 			</div>
 		</div>
 	</div>
+	{/if}
+
 	<div class="column-item layui-row">
 		<div class="column-item-title layui-row subject-second-color font-color1 font-bold">热门文章</div>
 		<div class="jianjie-p layui-row">

@@ -1,23 +1,18 @@
 <?php
 namespace app\index\controller;
-use think\Controller;
-use think\Request;
-use app\index\model\Column;
 use app\index\model\Blog;
 
 use app\index\model\Province;
 use app\index\model\City;
 use app\index\model\Area;
 
-class Index extends Controller
+class Index extends Base
 {
     //获取博客列表页面
-    public function index(Request $request)
+    public function index()
     {
-//        $data = $this->provinceList();
-//        print_r($data);
         //获取栏目id
-        $cid = intval($request->param('cid'));
+        $cid = intval($this->request->param('cid'));
         $blog = new Blog();
 
         //获取博客列表
@@ -25,20 +20,16 @@ class Index extends Controller
 
         //获取5篇热点文章
         $hotBlog = $blog->findHotBlog($cid,5);
-
-        //获取博客栏目分类
-        $cate = $this->findCategory();
-        $this->assign('cate',$cate);
         $this->assign('blogData',$blogData);
         $this->assign('hotBlog',$hotBlog);
         return $this->fetch();
     }
 
     //获取博客详情页面
-    public function show(Request $request)
+    public function show()
     {
         //获取博客文章id
-        $blogId = intval($request->param('blog_id'));
+        $blogId = intval($this->request->param('blog_id'));
 
         //获取博客文章详情
         $blog = new Blog();
@@ -47,9 +38,6 @@ class Index extends Controller
         //获取5篇热点文章
         $hotBlog = $blog->findHotBlog($content['column_id'],5);
 
-        //获取博客栏目分类
-        $cate = $this->findCategory();
-        $this->assign('cate',$cate);
         $this->assign('content',$content);
         $this->assign('hotBlog',$hotBlog);
         return $this->fetch();
@@ -65,19 +53,8 @@ class Index extends Controller
 
     //注册
     public function reg(){
-        //获取博客栏目分类
-        $cate = $this->findCategory();
-        $this->assign('cate',$cate);
         return $this->fetch();
     }
-
-    //获取博客栏目分类，默认取6个分类
-    public function findCategory(){
-        $col = new Column();
-        return $col->findCategory(6);
-
-    }
-
 
     /**
      * 省列表

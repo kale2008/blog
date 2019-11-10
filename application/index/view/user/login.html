@@ -5,6 +5,7 @@
 			<h2>登录</h2>
 		</div>
 	<div class="hr-line-div"></div>
+	<form action="/index.php/index/user/doLogin" method="post" id="login_form">
 	<div class="login-form">
 		<p>用户名：</p>
 		<input type="text" name="username" id="username" placeholder="请输入用户名" class="layui-input">
@@ -15,12 +16,14 @@
 	</div>
 
 	<div class="login-form">
-		<button class="layui-btn layui-btn-fluid layui-btn-normal">登    录</button>
+		<button class="layui-btn layui-btn-fluid layui-btn-normal"
+		onclick="document.getElementById('login_form').submit();">登    录</button>
 	</div>
 	<div class="login-form">
 		<button class="layui-btn layui-btn-fluid"
 				onclick="window.location.href='/index.php/index/user/reg'">注   册</button>
 	</div>
+	</form>
 </div>
 </div>
 </body>
