@@ -112,3 +112,87 @@ window.onload = function(){
         document.getElementById("province").innerHTML=s;
     });
 }
+
+//收藏博文
+function addCollection(blog_id,member_id){
+    if (!member_id){
+        alert('您未登录，登录后操作');
+        return false;
+    }
+    var url = '/index.php/index/index/addCollection';
+    var params = {'blog_id':blog_id,'member_id':member_id};
+    ajax('post', url, params, function fnSucc(str){
+        obj = JSON.parse(str);
+        if (obj.status >0){
+            alert('收藏操作成功');
+            window.location.reload(true);
+        }else{
+            alert('收藏操作失败');
+            window.location.reload(true);
+        }
+        return false;
+    });
+}
+
+//取消收藏博文
+function cancelCollection(blog_id,member_id){
+    if (!member_id){
+        alert('您未登录，登录后操作');
+        return false;
+    }
+    var url = '/index.php/index/index/cancelCollection';
+    var params = {'blog_id':blog_id,'member_id':member_id};
+    ajax('post', url, params, function fnSucc(str){
+        obj = JSON.parse(str);
+        if (obj.status >0){
+            alert('取消收藏操作成功');
+            window.location.reload(true);
+        }else{
+            alert('取消收藏操作失败');
+            window.location.reload(true);
+        }
+        return false;
+    });
+}
+
+//博文点赞
+function addFabulous(blog_id,member_id){
+    if (!member_id){
+        alert('您未登录，登录后操作');
+        return false;
+    }
+    var url = '/index.php/index/index/addFabulous';
+    var params = {'blog_id':blog_id,'member_id':member_id};
+    ajax('post', url, params, function fnSucc(str){
+        obj = JSON.parse(str);
+        if (obj.status >0){
+            alert('点赞操作成功');
+            window.location.reload(true);
+        }else{
+            alert('点赞操作失败');
+            window.location.reload(true);
+        }
+        return false;
+    });
+}
+
+//取消点赞
+function cancelFabulous(blog_id,member_id){
+    if (!member_id){
+        alert('您未登录，登录后操作');
+        return false;
+    }
+    var url = '/index.php/index/index/cancelFabulous';
+    var params = {'blog_id':blog_id,'member_id':member_id};
+    ajax('post', url, params, function fnSucc(str){
+        obj = JSON.parse(str);
+        if (obj.status >0){
+            alert('点赞操作操作成功');
+            window.location.reload(true);
+        }else{
+            alert('点赞操作操作失败');
+            window.location.reload(true);
+        }
+        return false;
+    });
+}

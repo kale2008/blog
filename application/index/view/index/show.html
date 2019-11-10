@@ -1,4 +1,5 @@
 {include file="public/header" /}
+<script type="text/javascript" src="__STATIC__/index/js/common.js"></script>
 <div class="main-content item-box">
 	<div class="item-type">
 		<div class="column-item layui-row">
@@ -22,7 +23,25 @@
 		<div class="article-content-box layui-row">
 			<h1>{$content['blog_title']}</h1>
 			<div class="article-param layui-row">
-				{$content['update_time']}<span>点赞数：{$content['blog_fabulous']}</span>&nbsp;
+				{$content['update_time']}
+				<span>&nbsp;</span>
+				<span>&nbsp;</span>
+				<span>
+					{if($fabulousFlag)}
+					   <button onclick="cancelFabulous({$content['blog_id']},'{$index_user_id}')" style="cursor: pointer">取消点赞
+						({$content['blog_fabulous']})</button>
+					{else}
+                       <button onclick="addFabulous({$content['blog_id']},'{$index_user_id}')" style="cursor: pointer">&nbsp;点  赞
+						({$content['blog_fabulous']})</button>
+					{/if}
+				</span>
+				<span>
+					{if($collectionFlag)}
+					   <button onclick="cancelCollection({$content['blog_id']},'{$index_user_id}')" style="cursor: pointer">取消收藏</button>
+					{else}
+                       <button onclick="addCollection({$content['blog_id']},'{$index_user_id}')" style="cursor: pointer">&nbsp;收  藏</button>
+					{/if}
+				</span>
 			</div>
 			<article>
 				{$content['blog_content']|raw}

@@ -50,5 +50,18 @@ class Blog extends Model
             ->find();
     }
 
+    //收藏数加1
+    public function setIncFabulous($blogId){
+        return Db::table($this->table)
+            ->where('blog_id', $blogId)
+            ->setInc('blog_fabulous');
+    }
+
+    //收藏数减1
+    public function setDecFabulous($blogId){
+        return Db::table($this->table)
+            ->where('blog_id', $blogId)
+            ->setDec('blog_fabulous');
+    }
 
 }

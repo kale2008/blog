@@ -1,11 +1,12 @@
 <?php
 namespace app\index\controller;
-use think\Controller;
+use app\index\model\Blog;
+use app\index\model\Collection;
 use think\facade\Cookie;
 use app\index\model\Column;
 use app\index\model\Member;
 
-class User extends Controller
+class User extends Base
 {
     private $error;
 
@@ -35,8 +36,10 @@ class User extends Controller
             $this->error('你输入的用户名或者密码有误，请重新输入');
         }
         //设置Cookie 有效期为 1天
-        Cookie::set('index_user',$username,86400);
-        Cookie::set('index_avatar',$user['member_avatar'],86400);
+        $time = 86400;
+        Cookie::set('index_user',$username,$time);
+        Cookie::set('index_user_id',$user['member_id'],$time);
+        Cookie::set('index_avatar',$user['member_avatar'],$time);
         $this->success('登录成功','/');
     }
 
@@ -162,5 +165,30 @@ class User extends Controller
             return false;
         }
         return true;
+    }
+
+    //退出登录
+    public function logout()
+    {
+        Cookie::delete('index_user');
+        Cookie::delete('index_avatar');
+        Cookie::delete('index_user_id');
+        $this->success('退出成功','/');
+    }
+
+    public function collection(){
+        if (!Cookie::has('index_user_id')) {
+            $this->error('您未登录');
+        }else{
+            $memberId = Cookie::get('index_user_id');
+            $collectionModel = new Collection();
+            $blogData = $collectionModel->findAllBlog($memberId);
+            //获取5篇热点文章
+            $blog = new Blog();
+            $hotBlog = $blog->findHotBlog(0,5);
+            $this->assign('blogData',$blogData);
+            $this->assign('hotBlog',$hotBlog);
+        }
+        return $this->fetch();
     }
 }
