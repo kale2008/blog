@@ -20,4 +20,6 @@ class Province extends Model
         }
         return $res;
     }
+
+
 }

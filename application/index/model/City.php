@@ -20,4 +20,18 @@ class City extends Model
         return $res;
     }
 
+    /**
+     * 获取市列表 - 以code为key
+     * @return array
+     */
+    public function cityAll(){
+        $res = [];
+        $data = $this->all()->toArray();
+        foreach ($data as $v){
+            $v['code'] = $v['city_code'];
+            $v['name'] = $v['city'];
+            $res[$v['city_code']] = $v;
+        }
+        return $res;
+    }
 }

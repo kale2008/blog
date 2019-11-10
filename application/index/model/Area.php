@@ -19,5 +19,19 @@ class Area extends Model
         }
         return $res;
     }
-    
+
+    /**
+     * 获取区列表 - 以code为key
+     * @return array
+     */
+    public function areaAll(){
+        $res = [];
+        $data = $this->all()->toArray();
+        foreach ($data as $v){
+            $v['code'] = $v['area_code'];
+            $v['name'] = $v['area'];
+            $res[$v['area_code']] = $v;
+        }
+        return $res;
+    }
 }

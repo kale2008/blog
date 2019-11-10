@@ -39,6 +39,20 @@ class Member extends Model
     }
 
     /**
+     * 修改用户信息
+     * @param array $data
+     * @return bool
+     */
+    public function updateMemberById(array $data, int $id){
+        try {
+            Db::table($this->table)->where('member_id', $id)->update($data);
+        }catch (\Exception $e){
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * 获取用户信息通过用户名
      * @param string $name
      * @return array

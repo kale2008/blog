@@ -4,8 +4,11 @@ use think\Controller;
 use think\facade\Cookie;
 use app\index\model\Column;
 use app\index\model\Member;
+use app\index\model\Province;
+use app\index\model\City;
+use app\index\model\Area;
 
-class User extends Controller
+class User extends Base
 {
     private $error;
 
@@ -40,6 +43,86 @@ class User extends Controller
         $this->success('登录成功','/');
     }
 
+    /**
+     * 个人信息展示
+     * @return mixed
+     */
+    public function show(){
+        $username = Cookie::get('index_user');
+        $userObj = new Member();
+        $userInfo = $userObj->getUserByName($username);
+        $provinceModel = new Province();
+        $provinceData = $provinceModel->provinceAll();
+        $cityModel = new city();
+        $cityData = $cityModel->cityAll();
+        $areaModel = new Area();
+        $areaData = $areaModel->AreaAll();
+        $userInfo['province_name'] = $provinceData[$userInfo['member_province']]['name'];
+        $userInfo['city_name'] = $cityData[$userInfo['member_city']]['name'];
+        $userInfo['county_name'] = $areaData[$userInfo['member_county']]['name'];
+        if( !$userInfo ){
+            $this->success('用户不存在','/');
+        }
+        return view('/user/info', ['userInfo'=>$userInfo]);
+    }
+
+    /**
+     * 个人信息修改
+     * @return string
+     */
+    public function infoUp(){
+        $username = Cookie::get('index_user');
+        $userObj = new Member();
+        $userInfo = $userObj->getUserByName($username);
+        if( !$userInfo ){
+            $this->success('用户不存在','/');
+        }
+
+        if( request()->isPost() ){ // 提交操作， 修改用户信息和头像
+            $params = $_REQUEST;
+            $data = [
+                'member_province'    => $params['province'],
+                'member_city'        => $params['city'],
+                'member_county'      => $params['county'],
+                'member_address'     => $params['address'],
+            ];
+            if( !$this->_checkUserUpdateData($params)){
+                echo $this->error;
+                return;
+            }
+            $pic = $userInfo['member_avatar'];
+            $pic = explode('/', $pic);
+            $len = count($pic);
+            if(!empty($_FILES['avatar']['name']) && $_FILES['avatar']['name'] != $pic[$len-1]) {
+                if (!($url = $this->_uploadAvatar($_FILES['avatar']))) {
+                    echo $this->error;
+                    return;
+                }
+                $data['member_avatar'] = $url;
+            }
+            $userObj = new Member();
+            $res = $userObj->updateMemberById($data, $userInfo['member_id']);
+            if($res){
+                return $this->redirect('/index.php/index/user/show ');
+            }else{
+                return '修改个人信息失败';
+            }
+        }else{
+            $provinceModel = new Province();
+            $provinceData = $provinceModel->getProvinceList();
+            $cityModel = new City();
+            $cityData = $cityModel->getCityListByProvinceCode($userInfo['member_province']);
+            $areaModel = new Area();
+            $areaData = $areaModel->getAreaListByCityCode($userInfo['member_city']);
+            return view('/user/update', [
+                'userInfo' => $userInfo,
+                'provinceData' => $provinceData,
+                'cityData' => $cityData,
+                'areaData' => $areaData,
+            ]);
+        }
+    }
+
     //注册
     public function reg(){
         //获取博客栏目分类
@@ -56,6 +139,7 @@ class User extends Controller
     }
 
     /**
+     * 提交注册
      * @return string|void
      */
     public function regSave(){
@@ -199,6 +283,9 @@ class User extends Controller
         }
         $dir = '/static/index/image/user_avatar/';
         $file_path = $_SERVER['DOCUMENT_ROOT'].$dir;
+        if( !file_exists($file_path) ){
+            mkdir($file_path, '755');
+        }
         if(file_exists($file_path.$file['name'])){
             $this->error = '您上传的文件已存在';
             return $res;
@@ -210,5 +297,40 @@ class User extends Controller
         }
         $res = $dir.$file["name"];
         return $res;
+    }
+
+    /**
+     * 校验注册数据
+     * @param $data
+     * @return bool
+     */
+    private function _checkUserUpdateData($data){
+        $provinceTitle = '省';
+        $cityTitle = '市';
+        $countyTitle = '区';
+        $addressTitle = '具体地址';
+        $emptyTitle = '不能为空';
+        $regex = '/[0-9a-zA-Z_-]+/';
+
+        // 校验省/市/县
+        if( empty($data['province']) ){
+            $this->error = $provinceTitle.$emptyTitle;
+            return false;
+        }
+        if( empty($data['city']) ){
+            $this->error = $cityTitle.$emptyTitle;
+            return false;
+        }
+        if( empty($data['county']) ){
+            $this->error = $countyTitle.$emptyTitle;
+            return false;
+        }
+
+        // 校验具体地址
+        if( empty($data['address']) ){
+            $this->error = $addressTitle.$emptyTitle;
+            return false;
+        }
+        return true;
     }
 }

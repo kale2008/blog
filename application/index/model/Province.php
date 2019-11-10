@@ -20,4 +20,17 @@ class Province extends Model
         }
         return $res;
     }
+
+    /**
+     * 获取省列表 - 以code为key
+     * @return array
+     */
+    public function provinceAll(){
+        $res = [];
+        $data = $this->getProvinceList();
+        foreach ($data as $v){
+            $res[$v['code']] = $v;
+        }
+        return $res;
+    }
 }
