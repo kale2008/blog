@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>博客后台管理系统</title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/admin_login.css"/>
+    <script type="text/javascript" src='__STATIC__/admin/js/ajax.js'></script>
+</head>
+<body>
+<div class="admin_login_wrap">
+    <h1>博客后台管理系统</h1>
+    <div class="adming_login_border">
+        <div class="admin_input">
+            <form>
+                <ul class="admin_items">
+                    <li>
+                        <label for="username">用户名：</label>
+                        <input type="text" name="username" size="30" class="admin_input_style" />
+                    </li>
+                    <li>
+                        <label for="password">密码：</label>
+                        <input type="password" name="password" size="30" class="admin_input_style" />
+                    </li>
+                     <li>
+                        <label for="code">验证码：</label>
+                        <input type="text" name="code" size="20" class="admin_input_style" />&nbsp;&nbsp;
+                        <span id='code' >{$code}</span>
+                    </li>
+                    <li>
+                        <label><input type="checkbox" name="is_three"/>三天免登陆</label>
+
+                    </li>
+                    <li>
+                        <input type="button" onclick='login()' tabindex="3" value="登录" class="btn btn-primary" />
+                    </li>
+                    
+                </ul>
+            </form>
+        </div>
+    </div>
+    <p class="admin_copyright"><a tabindex="5" href="#" target="_blank">前台首页</a> &copy; 2019 博客后台管理系统</p>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+        var oName = document.getElementsByName('username')[0];
+        var oPass = document.getElementsByName('pass')[0];
+        var oCode = document.getElementsByName('code')[0];
+        var oThree = document.getElementsByName('is_three')[0];
+        var oSpan = document.getElementById('code');
+
+        function login()
+        {
+            var username = document.getElementsByName('username')[0].value;
+            var password = document.getElementsByName('password')[0].value;
+            var code = document.getElementsByName('code')[0].value;
+            var is_three = oThree.checked;
+            var url = "{:url('user/dologin')}";
+            var type = 'get';
+            var callback = success;
+            var data = "username="+username+"&password="+password+"&code="+code+"&is_three="+is_three;
+            ajax(url, data, type, callback);
+        }
+
+        function success(data)
+        {
+            if (data.num == 0) {
+                alert(data.msg);
+                oSpan.innerText = data.code;
+            } else {
+                window.location.href = "{:url('index/index')}";
+            }
+        }
+    
+</script>

@@ -1,0 +1,301 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>后台管理</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/main.css"/>
+    <script type="text/javascript" src="__STATIC__/admin/js/ajax.js"></script>
+</head>
+<body>
+<div class="topbar-wrap white">
+    <div class="topbar-inner clearfix">
+        <div class="topbar-logo-wrap clearfix">
+            <h1 class="topbar-logo none"><a href="{:url('index/index')}" class="navbar-brand">后台管理</a></h1>
+            <ul class="navbar-list clearfix">
+                <li><a class="on" href="{:url('index/index')}">首页</a></li>
+                <li><a href="{:url('index/index/index')}" target="_blank">网站首页</a></li>
+            </ul>
+        </div>
+        <div class="top-info-wrap">
+            <ul class="top-info-list clearfix">
+                <li><a href="{:url('user/logout')}">退出</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container clearfix">
+    <div class="sidebar-wrap">
+        <div class="sidebar-title">
+            <h1>菜单</h1>
+        </div>
+        <div class="sidebar-content">
+            <ul class="sidebar-list">
+                <li>
+                    <a href="#"><i class="icon-font">&#xe003;</i>网站管理</a>
+                    <ul class="sub-menu">
+                        <li><a href=""><i class="icon-font">&#xe008;</i>用户管理</a></li>
+                        <li><a href="{:url('column/index')}"><i class="icon-font">&#xe005;</i>栏目管理</a></li>
+                        <li><a href="{:url('blog/index')}"><i class="icon-font">&#xe006;</i>博文管理</a></li>
+                        <li><a href=""><i class="icon-font">&#xe004;</i>留言管理</a></li>
+                        <li><a href=""><i class="icon-font">&#xe012;</i>评论管理</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--/sidebar-->
+    <div class="main-wrap">
+
+        <div class="crumb-wrap">
+            <div class="crumb-list"><i class="icon-font"></i><a href="{:url('index/index')}">首页</a><span class="crumb-step">&gt;</span><span class="crumb-name">栏目管理</span></div>
+        </div>
+        <div class="search-wrap">
+            <div class="search-content">
+                <form>
+                    <table class="search-tab">
+                        <tr>
+                            <th width="70">栏目名称：</th>
+                            <td><input class="common-text" placeholder="全部" name="column_name" id="" type="text"></td>
+                            <th width="70">栏目状态：</th>
+                            <td><select name='column_status'>
+                                <option value='0'>全部</option>
+                                <option value='1'>启用</option>
+                                <option value='2'>不启用</option>
+                            </select></td>
+                            <td><input class="btn btn-primary btn2" name="sub" value="查询" type="button" onclick="search()"></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+        <div class="result-wrap">
+            <form name="myform" id="myform" method="post">
+                <div class="result-title">
+                    <div class="result-list">
+                        <a href="{:url('column/add')}"><i class="icon-font"></i>新增栏目</a>
+                        <a id="batchDel" href="javascript:numDelete()"><i class="icon-font"></i>批量删除</a>
+                    </div>
+                </div>
+                <div class="result-content">
+                    <table class="result-tab" width="60%">
+                        <tr>
+                            <th class="tc"><input onclick="selectAll(this)" class="allChoose"  type="checkbox"></th>
+                            <th>ID</th>
+                            <th>栏目名称</th>
+                            <th>栏目状态</th>
+                            <th>操作</th>
+                        </tr>
+                        <tbody id='content'>
+                        {foreach $info as $vo}
+                        <tr>
+                            <td class="tc"><input name="id[]" value="{$vo.column_id}" type="checkbox"></td>
+                            <td>{$vo.column_id}</td>
+                            <td><span name="{$vo.column_name}">{$vo.column_name}<i class="icon-font" id="{$vo.column_id}" name='upd' > &#xe002;</i></span>
+                            </td>
+                            {eq name="$vo.column_status" value="1"}
+                                <td><a href="javascript:void(0)" onclick="status(this, {$vo.column_id})">启用</a></td>
+                            {else/}
+                                <td> <a href="javascript:void(0)" onclick="status(this, {$vo.column_id})">不启用</a></td>
+                            {/eq}
+                            <td>
+                                <a class="link-del" href="javascript:void(0)" onclick="deleteColumn(this, {$vo.column_id})">删除</a>
+                            </td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                        <tr align="center">
+                            <td colspan="5">
+                                <a name='page' href="javascript:ajaxPage(1)">首页</a> |
+                                <a name='page' href="javascript:ajaxPage({$pageData.prev})">上一页</a> |
+                                <a name='page' href="javascript:ajaxPage({$pageData.next})">下一页</a> |
+                                <a name='page' href="javascript:ajaxPage({$pageData.end})">尾页</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!--/main-->
+</div>
+</body>
+</html>
+<script type="text/javascript">
+
+    var column_name = null;
+    var column_status = null;
+    function search()
+    {
+        var oName = document.getElementsByName('column_name')[0];
+        var oStatus = document.getElementsByName('column_status')[0];
+        column_name = oName.value;
+        column_status = oStatus.value;
+        var data = "column_name="+column_name+"&column_status="+column_status;
+        var url = "{:url('column/ajaxPage')}";
+        var type = 'get';
+        var callback = success;
+        ajax(url, data, type, callback);
+    }
+    function ajaxPage(page)
+    {
+        var data = "page="+page;
+        if (column_name != null && column_status != null) {
+            data += "&column_name="+column_name+"&column_status="+column_status;
+        }
+        var url = "{:url('column/ajaxPage')}";
+        var type = 'get';
+        var callback = success;
+        ajax(url, data, type, callback);
+    }
+    function success(data)
+    {
+        var oA = document.getElementsByName('page');
+        var oContent = document.getElementById('content');
+
+        //清空原数据
+        oContent.innerHTML = '';
+        //循环拼接数据
+        for (var i=0; i<data.info.length; i++) {
+            //准备字符串str拼接每行数据
+            var str = '<tr>';
+            str += "<td class='tc'><input name='id[]' value='"+ data.info[i]['column_id'] +"' type='checkbox'></td>";
+            str += "<td>"+ data.info[i]['column_id'] +"</td>";
+            str += "<td><span name='"+ data.info[i]['column_name'] +"'>"+ data.info[i]['column_name'];
+            str += "<i class='icon-font' id='"+ data.info[i]['column_id'] +"' name='upd'> &#xe002;</i></span></td>";
+            if (data.info[i]['column_status'] == 1) {
+                str += "<td><a href='javascript:void(0)' onclick='status(this,"+ data.info[i]['column_id'] +")' >启用</a></td>";
+            } else {
+                str += "<td><a href='javascript:void(0)' onclick='status(this,"+ data.info[i]['column_id'] +")' >不启用</a></td>";
+            }
+            str += "<td><a class='link-del'href='javascript:void(0)' onclick='status(this,"+ data.info[i]['column_id'] +")'>删除</a></td>";
+            //将每行数据追加拼接到tbody中
+            oContent.innerHTML += str;
+        }
+
+        //渲染分页按钮page值
+        oA[0].href="javascript:ajaxPage(1)";
+        oA[1].href="javascript:ajaxPage("+ data.pageData.prev +")";
+        oA[2].href="javascript:ajaxPage("+ data.pageData.next +")";
+        oA[3].href="javascript:ajaxPage("+ data.pageData.end +")";
+
+        var icon = document.getElementsByName('upd');
+        for (var i=0; i<icon.length; i++) {
+            icon[i].addEventListener('click', update, false);
+        }
+
+    }
+    var icon = document.getElementsByName('upd');
+    for (var i=0; i<icon.length; i++) {
+        icon[i].addEventListener('click', update, false);
+    }
+    function update(obj)
+    {
+        var oSpan = this.parentNode;
+        oSpan.innerHTML = '';
+        var name = oSpan.getAttribute('name');
+        var oInput = document.createElement('input');
+        oInput.text = 'text';
+        oInput.value = name;
+        oSpan.appendChild(oInput);
+        var oI = document.createElement('i');
+        oI.className = 'icon-font';
+        oI.innerHTML = " &#xe006;";
+        oI.id = this.id;
+        oSpan.appendChild(oI);
+
+        oI.addEventListener('click', function() {
+            var column_name = this.previousElementSibling.value;
+            if (column_name == '') {
+                return false;
+            }
+            var column_id = this.id;
+            var oSpan = this.parentNode;
+            var data = "column_id="+column_id+"&column_name="+column_name;
+            var url = "{:url('column/ajaxUpdate')}";
+            var type = 'get';
+            ajax(url, data, type, function (data) {
+                oSpan.innerHTML = column_name;  
+                var oI = document.createElement('i');
+                oI.className = 'icon-font';
+                oI.innerHTML = " &#xe002;";
+                oSpan.appendChild(oI);
+                oSpan.setAttribute('name', column_name);
+                oI.addEventListener('click', update, false);
+            });
+            
+        }, false);     
+    }
+
+    function status(obj, id)
+    {
+        var data = "id="+id;
+        var url = "{:url('column/ajaxStatus')}";
+        var type = 'get';
+        ajax(url, data, type, function (data) {
+            if (data.num >= 1) {
+                if (obj.innerHTML == '启用') {
+                    obj.innerHTML = '不启用';
+                } else {
+                    obj.innerHTML = '启用';
+                }
+            } else {
+                alert('修改失败，请重试！');
+            }  
+        });
+    }
+    
+    function deleteColumn(obj, id)
+    {
+        objArr = [];
+        if (obj.length) {
+            objArr = obj;
+        } else {
+            objArr.push(obj);
+        }
+        var data = "id="+id;
+        var url = "{:url('column/ajaxDelete')}";
+        var type = 'get';
+        ajax(url, data, type, function (data) {
+            if (data.num >= 1) {
+                for (var i=0; i<objArr.length; i++) {
+                    var oTr = objArr[i].parentNode.parentNode;
+                    var oTbody = objArr[i].parentNode.parentNode.parentNode;
+                    oTbody.removeChild(oTr);
+                } 
+            } else {
+                alert('删除失败，请重试！');
+            }  
+        });
+    }
+
+    function selectAll(obj)
+    {
+        var oCheck = document.getElementsByName('id[]');
+        for (var i=0; i<oCheck.length; i++) {
+            if (obj.checked == true) {
+                oCheck[i].checked = true;
+            } else {
+                oCheck[i].checked = false;
+            }   
+        }
+    }
+    function numDelete()
+    {
+        var arr = [];
+        var obj = [];
+        var oCheck = document.getElementsByName('id[]');
+        for (var i=0; i<oCheck.length; i++) {
+            if (oCheck[i].checked == true) {
+                arr.push(oCheck[i].value);
+                obj.push(oCheck[i]);
+            }   
+        }
+        if (arr.length <= 0) {
+            alert('没有选择任何要删除的栏目');
+            return false;
+        }
+        deleteColumn(obj, arr);
+        
+    }
+</script>

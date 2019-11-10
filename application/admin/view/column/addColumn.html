@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>后台管理</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/main.css"/>
+    <script type="text/javascript" src="__STATIC__/admin/js/ajax.js"></script>
+</head>
+<body>
+<div class="topbar-wrap white">
+    <div class="topbar-inner clearfix">
+        <div class="topbar-logo-wrap clearfix">
+            <h1 class="topbar-logo none"><a href="{:url('index/index')}" class="navbar-brand">后台管理</a></h1>
+            <ul class="navbar-list clearfix">
+                <li><a class="on" href="{:url('index/index')}">首页</a></li>
+                <li><a href="{:url('index/index/index')}" target="_blank">网站首页</a></li>
+            </ul>
+        </div>
+        <div class="top-info-wrap">
+            <ul class="top-info-list clearfix">
+                <li><a href="{:url('user/logout')}">退出</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container clearfix">
+    <div class="sidebar-wrap">
+        <div class="sidebar-title">
+            <h1>菜单</h1>
+        </div>
+        <div class="sidebar-content">
+            <ul class="sidebar-list">
+               <li>
+                    <a href="#"><i class="icon-font">&#xe003;</i>网站管理</a>
+                    <ul class="sub-menu">
+                        <li><a href=""><i class="icon-font">&#xe008;</i>用户管理</a></li>
+                        <li><a href="{:url('column/index')}"><i class="icon-font">&#xe005;</i>栏目管理</a></li>
+                        <li><a href="{:url('blog/index')}"><i class="icon-font">&#xe006;</i>博文管理</a></li>
+                        <li><a href=""><i class="icon-font">&#xe004;</i>留言管理</a></li>
+                        <li><a href=""><i class="icon-font">&#xe012;</i>评论管理</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--/sidebar-->
+    <div class="main-wrap">
+
+        <div class="crumb-wrap">
+            <div class="crumb-list"><i class="icon-font"></i><a href="{:url('index/index')}">首页</a><span class="crumb-step">&gt;</span><a class="crumb-name" href="{:url('column/index')}">栏目管理</a><span class="crumb-step">&gt;</span><span>新增栏目</span></div>
+        </div>
+        <div class="result-wrap">
+            <div class="result-content">
+                <form>
+                    <table class="insert-tab" width="80%">
+                        <tbody><tr>
+                        </tr>
+                            <tr>
+                                <th><i class="require-red">*</i>栏目名称：</th>
+                                <td>
+                                    <input class="common-text required" id="title" name="title" size="50" type="text">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><i class="require-red">*</i>栏目状态：</th>
+                                <td>
+                                    <label><input class="common-text" name="status" checked type="radio" value="1">启用</label>
+                                    <label><input class="common-text" name="status"  type="radio" value='0'>不启用</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <td>
+                                    <input class="btn btn-primary btn6 mr10" value="提交" type="button" id='btn'>
+                                    <input class="btn btn6" onClick="history.go(-1)" value="返回" type="button">
+                                </td>
+                            </tr>
+                        </tbody></table>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--/main-->
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    var oTitle = document.getElementsByName('title')[0];
+    var oStatus = document.getElementsByName('status');
+    var oBtn = document.getElementById('btn');
+    oBtn.onclick = function () {
+        var title = oTitle.value;
+        if (title.length == 0) {
+            alert('栏目名称不能为空');
+            return false;
+        }
+        for (var i = 0; i <= oStatus.length-1; i++) {
+            if (oStatus[i].checked) {
+                var status = oStatus[i].value;
+            }
+        }
+        var url = "{:url('column/doadd')}";
+        var type = 'get';
+        var callback = success;
+        var data = "title="+title+"&status="+status;
+        
+        ajax(url, data, type, callback);
+    }
+    function success(data)
+    {
+        console.log(data);
+        if (data.num == 0) {
+            alert(data.msg);
+            return false;
+        } else {
+            window.location.href = "{:url('column/index')}";
+        }
+    }
+</script>

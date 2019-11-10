@@ -1,0 +1,282 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>后台管理</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/main.css"/>
+    <script type="text/javascript" src="__STATIC__/admin/js/ajax.js"></script>
+</head>
+<body>
+<div class="topbar-wrap white">
+    <div class="topbar-inner clearfix">
+        <div class="topbar-logo-wrap clearfix">
+            <h1 class="topbar-logo none"><a href="{:url('index/index')}" class="navbar-brand">后台管理</a></h1>
+            <ul class="navbar-list clearfix">
+                <li><a class="on" href="{:url('index/index')}">首页</a></li>
+                <li><a href="{:url('index/index/index')}" target="_blank">网站首页</a></li>
+            </ul>
+        </div>
+        <div class="top-info-wrap">
+            <ul class="top-info-list clearfix">
+                <li><a href="{:url('user/logout')}">退出</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container clearfix">
+    <div class="sidebar-wrap">
+        <div class="sidebar-title">
+            <h1>菜单</h1>
+        </div>
+        <div class="sidebar-content">
+            <ul class="sidebar-list">
+                <li>
+                    <a href="#"><i class="icon-font">&#xe003;</i>网站管理</a>
+                    <ul class="sub-menu">
+                        <li><a href=""><i class="icon-font">&#xe008;</i>用户管理</a></li>
+                        <li><a href="{:url('column/index')}"><i class="icon-font">&#xe005;</i>栏目管理</a></li>
+                        <li><a href="{:url('blog/index')}"><i class="icon-font">&#xe006;</i>博文管理</a></li>
+                        <li><a href=""><i class="icon-font">&#xe004;</i>留言管理</a></li>
+                        <li><a href=""><i class="icon-font">&#xe012;</i>评论管理</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--/sidebar-->
+    <div class="main-wrap">
+
+        <div class="crumb-wrap">
+            <div class="crumb-list"><i class="icon-font"></i><a href="{:url('blog/index')}">首页</a><span class="crumb-step">&gt;</span><span class="crumb-name">博文管理</span></div>
+        </div>
+        <div class="search-wrap">
+            <div class="search-content">
+                <form action="#" method="post">
+                    <table class="search-tab">
+                        <tr>
+                            <th width="120">选择栏目:</th>
+                            <td>
+                                <select name="column_name" id="">
+                                    <option value="">全部</option>
+                                    {foreach $allColumn as $vo}
+                                     <option value="{$vo.column_id}">{$vo.column_name}</option>
+                                    {/foreach}
+                                </select>
+                            </td>
+                            <th width="70">博文标题:</th>
+                            <td><input class="common-text" placeholder="全部" name="blog_title" value="" id="" type="text"></td>
+                            <td><input class="btn btn-primary btn2" name="sub" value="查询" type="button" onclick="search()"></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+        <div class="result-wrap">
+            <form name="myform" id="myform" method="post">
+                <div class="result-title">
+                    <div class="result-list">
+                        <a href="{:url('blog/add')}"><i class="icon-font"></i>新增博文</a>
+                        <a id="batchDel" href="javascript:numDelete()"><i class="icon-font"></i>批量删除</a>
+                    </div>
+                </div>
+                <div class="result-content">
+                    <table class="result-tab" width="100%">
+                        <tr>
+                            <th class="tc" width="5%"><input onclick="selectAll(this)" class="allChoose"  type="checkbox"></th>
+                            <th>ID</th>
+                            <th>博文标题</th>
+                            <th>所属栏目</th>
+                            <th>栏目状态</th>
+                            <th>博文状态</th>
+                            <th>点赞量</th>
+                            <th>操作</th>
+                        </tr>
+                        <tbody id='content'>
+                        {foreach $info as $vo}
+                        <tr>
+                            <td class="tc"><input name="id[]" value="59" type="checkbox"></td>
+                            <td>{$vo.blog_id}</td>
+                            <td title="发哥经典"><a target="_blank" href="#" title="发哥经典">{$vo.blog_title}</a>
+                            </td>
+                            <td>{$vo.column_name}</td>
+                            <td>
+                            {if $vo.column_status == 1}
+                                启用
+                            {else /}
+                                未启用
+                            {/if}
+                            </td>
+                           
+                            {if $vo.blog_status == 1}
+                                <td><a href="javascript:void(0)" onclick="status(this, {$vo.blog_id})">已发布</a></td> 
+                            {else /}
+                                <td><a href="javascript:void(0)" onclick="status(this, {$vo.blog_id})">未发布</a></td>
+                            {/if}
+                            
+                            <td>{$vo.blog_fabulous}</td>
+                            <td>
+                                <a class="link-update" href="#">修改</a> | 
+                                <a class="link-del" href="javascript:void(0)" onclick="deleteBlog(this, {$vo.blog_id})">删除</a>
+                            </td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                        <tr align="center">
+                            <td colspan="8">
+                                <a name='page' href="javascript:ajaxPage(1)">首页</a> |
+                                <a name='page' href="javascript:ajaxPage({$pageData.prev})">上一页</a> |
+                                <a name='page' href="javascript:ajaxPage({$pageData.next})">下一页</a> |
+                                <a name='page' href="javascript:ajaxPage({$pageData.end})">尾页</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!--/main-->
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    var column_id = null;
+    var blog_title = null;
+    function search()
+    {
+        var oId = document.getElementsByName('column_name')[0];
+        var oBlog = document.getElementsByName('blog_title')[0];
+        column_id = oId.value;
+        blog_title = oBlog.value;
+        var data = "column_id="+column_id+"&blog_title="+blog_title;
+        var url = "{:url('blog/ajaxPage')}";
+        var type = 'get';
+        var callback = success;
+        ajax(url, data, type, callback);
+    }
+    function ajaxPage(page)
+    {
+        var data = "page="+page;
+        if (column_id != null && blog_title != null) {
+            data += "&column_id="+column_id+"&blog_title="+blog_title;
+        }
+
+        var url = "{:url('blog/ajaxPage')}";
+        var type = 'get';
+        var callback = success;
+        ajax(url, data, type, callback);
+    }
+    function success(data)
+    {
+        var oA = document.getElementsByName('page');
+        var oContent = document.getElementById('content');
+
+        //清空原数据
+        oContent.innerHTML = '';
+        //循环拼接数据
+        for (var i=0; i<data.info.length; i++) {
+            //准备字符串str拼接每行数据
+            var str = '<tr>';
+            str += " <td class='tc'><input name='id[]' value='"+data.info[i]['blog_id']+"' type='checkbox'></td>";
+            str += "<td>"+data.info[i]['blog_id']+"</td>";
+            str += "<td title='发哥经典'><a target='_blank' href='#' title='发哥经典'>"+data.info[i]['blog_title']+"</a></td>";    
+            str += "<td>"+data.info[i]['column_name']+"</td>";
+            if (data.info[i]['column_status'] == 1) {
+                str += "<td>启用</td>";
+            } else {
+                str += "<td>未启用</td>";
+            }
+            if (data.info[i]['blog_status'] == 1) {
+                str += "<td><a href='javascript:void(0)' onclick='status(this,"+ data.info[i]['blog_id'] +")' >发布</a></td>";
+            } else {
+                str += "<td><a href='javascript:void(0)' onclick='status(this,"+ data.info[i]['blog_id'] +")' >未发布</a></td>";
+            }  
+            str += "<td>"+data.info[i]['blog_fabulous']+"</td>";
+            str += "<td><a class='link-update' href='#'>修改</a> | ";
+            str += "<a class='link-del' href='javascript:void(0)' onclick='deleteBlog(this," +data.info[i]['blog_id'] +")'>删除</a></tr>";
+            //将每行数据追加拼接到tbody中
+            oContent.innerHTML += str;
+        }
+
+        //渲染分页按钮page值
+        oA[0].href="javascript:ajaxPage(1)";
+        oA[1].href="javascript:ajaxPage("+ data.pageData.prev +")";
+        oA[2].href="javascript:ajaxPage("+ data.pageData.next +")";
+        oA[3].href="javascript:ajaxPage("+ data.pageData.end +")";
+    }
+   
+
+    function status(obj, id)
+    {
+        var data = "id="+id;
+        var url = "{:url('blog/ajaxStatus')}";
+        var type = 'get';
+        ajax(url, data, type, function (data) {
+            if (data.num >= 1) {
+                if (obj.innerHTML == '已发布') {
+                    obj.innerHTML = '未发布';
+                } else {
+                    obj.innerHTML = '已发布';
+                }
+            } else {
+                alert('修改失败，请重试！');
+            }  
+        });
+    }
+    
+    function deleteBlog(obj, id)
+    {
+        objArr = [];
+        if (obj.length) {
+            objArr = obj;
+        } else {
+            objArr.push(obj);
+        }
+
+        var data = "id="+id;
+        var url = "{:url('blog/ajaxDelete')}";
+        var type = 'get';
+        ajax(url, data, type, function (data) {
+            console.log(data.num);
+            if (data.num >= 1) {
+                for (var i=0; i<objArr.length; i++) {
+                    var oTr = objArr[i].parentNode.parentNode;
+                    var oTbody = objArr[i].parentNode.parentNode.parentNode;
+                    oTbody.removeChild(oTr);
+                } 
+            } else {
+                alert('删除失败，请重试！');
+            }  
+        });
+    }
+
+    function selectAll(obj)
+    {
+        var oCheck = document.getElementsByName('id[]');
+        for (var i=0; i<oCheck.length; i++) {
+            if (obj.checked == true) {
+                oCheck[i].checked = true;
+            } else {
+                oCheck[i].checked = false;
+            }   
+        }
+    }
+    function numDelete()
+    {
+        var arr = [];
+        var obj = [];
+        var oCheck = document.getElementsByName('id[]');
+        for (var i=0; i<oCheck.length; i++) {
+            if (oCheck[i].checked == true) {
+                arr.push(oCheck[i].value);
+                obj.push(oCheck[i]);
+            }   
+        }
+        if (arr.length <= 0) {
+            alert('没有选择任何要删除的栏目');
+            return false;
+        }
+        deleteBlog(obj, arr);
+        
+    }
+</script>
