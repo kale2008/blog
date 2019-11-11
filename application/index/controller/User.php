@@ -81,32 +81,33 @@ class User extends Base
             $this->success('用户不存在','/');
         }
 
-        if( request()->isPost() ){ // 提交操作， 修改用户信息和头像
-            $params = $_REQUEST;
+        // 提交操作， 修改用户信息和头像
+        if( $this->request->isPost() ){
+            $params = $this->request->param();
             $data = [
                 'member_province'    => $params['province'],
                 'member_city'        => $params['city'],
                 'member_county'      => $params['county'],
-                'member_address'     => $params['address'],
+                'member_address'     => $params['address']
             ];
             if( !$this->_checkUserUpdateData($params)){
-                $this->success($this->error); // error page show
+                $this->error($this->error); // error page show
             }
             $pic = $userInfo['member_avatar'];
             $pic = explode('/', $pic);
             $len = count($pic);
             if(!empty($_FILES['avatar']['name']) && $_FILES['avatar']['name'] != $pic[$len-1]) {
                 if (!($url = $this->_uploadAvatar($_FILES['avatar']))) {
-                    $this->success($this->error); // error page show
+                    $this->error($this->error); // error page show
                 }
                 $data['member_avatar'] = $url;
             }
             $userObj = new Member();
             $res = $userObj->updateMemberById($data, $userInfo['member_id']);
             if($res){
-                return $this->redirect('/index.php/index/user/show ');
+                $this->redirect('/index.php/index/user/show');
             }else{
-                $this->success('修改个人信息失败'); // error page show
+                $this->error('修改个人信息失败'); // error page show
             }
         }else{
             $provinceModel = new Province();
@@ -334,7 +335,7 @@ class User extends Base
         $countyTitle = '区';
         $addressTitle = '具体地址';
         $emptyTitle = '不能为空';
-        $regex = '/[0-9a-zA-Z_-]+/';
+        //$regex = '/[0-9a-zA-Z_-]+/';
 
         // 校验省/市/县
         if( empty($data['province']) ){

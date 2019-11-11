@@ -41,9 +41,10 @@ class Member extends Model
     /**
      * 修改用户信息
      * @param array $data
+     * @param int $id
      * @return bool
      */
-    public function updateMemberById(array $data, int $id){
+    public function updateMemberById($data, $id){
         try {
             Db::table($this->table)->where('member_id', $id)->update($data);
         }catch (\Exception $e){
@@ -57,13 +58,11 @@ class Member extends Model
      * @param string $name
      * @return array
      */
-    public function getUserByName( string $name ){
-        $res = false;
-        $userInfo = Db::table($this->table)->where('member_name', $name)->select();
-        if( !empty($userInfo) ){
-            return !empty($userInfo[0]) ? $userInfo[0] : $res;
-        }
-        return $res;
+    public function getUserByName($name){
+        return Db::table($this->table)
+            ->where('member_name', $name)
+            ->where('member_status',1)  //用户状态，1：正常  2：封停
+            ->find();
     }
 
 }

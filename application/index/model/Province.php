@@ -2,15 +2,18 @@
 namespace app\index\model;
 
 use think\Model;
+use think\DB;
 
 class Province extends Model
 {
+    protected $table = 'tb_province';
     /**
+     * 获取省份列表
      * @return array
      */
     public function getProvinceList(){
         $res = [];
-        $provinceData = $this->all()->toArray();
+        $provinceData = Db::table($this->table)->select();
         if(!empty($provinceData)){
             foreach ($provinceData as $k => $v){
                 $v['name'] = $v['province'];

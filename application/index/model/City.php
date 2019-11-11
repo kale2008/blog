@@ -26,7 +26,7 @@ class City extends Model
      */
     public function cityAll(){
         $res = [];
-        $data = $this->all()->toArray();
+        $data = Db::table($this->table)->select();
         foreach ($data as $v){
             $v['code'] = $v['city_code'];
             $v['name'] = $v['city'];

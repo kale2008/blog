@@ -26,7 +26,7 @@ class Area extends Model
      */
     public function areaAll(){
         $res = [];
-        $data = $this->all()->toArray();
+        $data = Db::table($this->table)->select();
         foreach ($data as $v){
             $v['code'] = $v['area_code'];
             $v['name'] = $v['area'];
